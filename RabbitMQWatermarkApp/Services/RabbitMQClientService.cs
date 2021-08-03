@@ -23,7 +23,7 @@ namespace RabbitMQWatermarkApp.Services
         public IModel Connect()
         {
             _connection = _connectionFactory.CreateConnection();
-            if(_channel is { IsOpen: true }) // if(_channel.IsOpen == true)
+            if(_channel?.IsOpen == true) // if(_channel is { IsOpen: true })
             {
                 return _channel;
             }
