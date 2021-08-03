@@ -6,7 +6,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQWatermarkApp.Services;
@@ -16,13 +15,11 @@ namespace RabbitMQWatermarkApp.BackgroundServices
     public class ImageWatermarkProcessBackgroundService : BackgroundService
     {
         private readonly RabbitMQClientService _rabbitMQClientService;
-        private readonly ILogger _logger;
         private IModel _channel;
 
-        public ImageWatermarkProcessBackgroundService(RabbitMQClientService rabbitMQClientService, ILogger logger)
+        public ImageWatermarkProcessBackgroundService(RabbitMQClientService rabbitMQClientService)
         {
             _rabbitMQClientService = rabbitMQClientService;
-            _logger = logger;
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
@@ -54,11 +51,11 @@ namespace RabbitMQWatermarkApp.BackgroundServices
                 using var graphic = Graphics.FromImage(img);
 
                 var text = "alibulut.net";
-                var font = new Font(FontFamily.GenericMonospace, 32, FontStyle.Bold, GraphicsUnit.Pixel);
+                var font = new Font(FontFamily.GenericMonospace, 40, FontStyle.Bold, GraphicsUnit.Pixel);
                 var textSize = graphic.MeasureString(text, font);
-                var color = Color.FromArgb(128, 255, 255, 255);
+                var color = Color.FromKnownColor(KnownColor.Black);
                 var brush = new SolidBrush(color);
-                var position = new Point(img.Width - ((int)textSize.Width + 30), img.Height + ((int)textSize.Height + 30));
+                var position = new Point(100, 100);
 
                 graphic.DrawString(text, font, brush, position);
                 img.Save("wwwroot/images/watermarks/" + productImageCreatedEvent.ImageName);
